@@ -1,13 +1,16 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: prisma
   namespace: prisma
   labels:
     stage: production
-    name: prisma 
+    name: prisma
     app: prisma
 spec:
+  selector:
+    matchLabels:
+      app: prisma
   replicas: 1
   strategy:
     type: Recreate
@@ -15,7 +18,7 @@ spec:
     metadata:
       labels:
         stage: production
-        name: prisma 
+        name: prisma
         app: prisma
     spec:
       containers:
@@ -30,3 +33,10 @@ spec:
                 configMapKeyRef:
                   name: prisma-configmap
                   key: PRISMA_CONFIG
+          resources:
+            requests:
+              memory: '64Mi'
+              cpu: '250m'
+            limits:
+              memory: '128Mi'
+              cpu: '500m'

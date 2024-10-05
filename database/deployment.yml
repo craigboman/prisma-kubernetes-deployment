@@ -1,13 +1,16 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: database
   namespace: prisma
   labels:
     stage: production
-    name: database 
+    name: database
     app: mysql
 spec:
+  selector:
+    matchLabels:
+      app: mysql
   replicas: 1
   strategy:
     type: Recreate
@@ -15,7 +18,7 @@ spec:
     metadata:
       labels:
         stage: production
-        name: database 
+        name: database
         app: mysql
     spec:
       containers:
@@ -25,7 +28,14 @@ spec:
             - --ignore-db-dir=lost+found
           env:
             - name: MYSQL_ROOT_PASSWORD
-              value: "prisma"
+              value: 'prisma'
+          resources:
+            requests:
+              memory: '512Mi'
+              cpu: '500m'
+            limits:
+              memory: '1Gi'
+              cpu: '1'
           ports:
             - name: mysql-3306
               containerPort: 3306
